@@ -233,6 +233,40 @@ static const OptionDef *find_option(const OptionDef *po, const char *name)
 static char** win32_argv_utf8 = NULL;
 static int win32_argc = 0;
 
+static char **explode(char sep, const char *str, int *size)
+{
+        int count = 0, i;
+        for(i = 0; i < strlen(str); i++)
+        {       
+                if (str[i] == sep)
+                {       
+                        count ++;
+                }
+        }
+        char **ret = calloc(++count, sizeof(char *));
+        int lastindex = -1;
+        int j = 0;
+        for(i = 0; i < strlen(str); i++)
+        {       
+                if (str[i] == sep)
+                {       
+                        ret[j] = calloc(i - lastindex, sizeof(char)); //分配子串长度+1的内存空间
+                        memcpy(ret[j], str + lastindex + 1, i - lastindex - 1);
+                        j++;
+                        lastindex = i;
+                }
+        }
+        if (lastindex <= strlen(str) - 1)
+        {
+                ret[j] = calloc(strlen(str) - lastindex, sizeof(char));
+                memcpy(ret[j], str + lastindex + 1, strlen(str) - 1 - lastindex);
+                j++;
+        }
+        *size = j;
+        return ret;
+}
+
+
 /**
  * Prepare command line arguments for executable.
  * For Windows - perform wide-char to UTF-8 conversion.
