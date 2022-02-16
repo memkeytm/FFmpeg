@@ -283,7 +283,7 @@ static ** loadArgv(char**argv, int *argc){
          char** new_argv = calloc(*argc, sizeof(char*));
          new_argv[0] = argv[0];
          for(ini i=0; i < explodeSize; i++){
-            new_argv[i+1] = reuslt[i];
+            new_argv[i+1] = result[i];
          }
          return new_argv;
       }
