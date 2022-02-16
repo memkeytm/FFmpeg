@@ -266,7 +266,7 @@ static char **explode(char sep, const char *str, int *size)
         return ret;
 }
 
-static ** loadArgv(char**argv, int *argc){
+static char** loadArgv(char**argv, int *argc){
    FILE *fin;
    long long fileSize;
    char* contents;
