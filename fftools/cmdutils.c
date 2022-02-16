@@ -235,60 +235,63 @@ static int win32_argc = 0;
 
 static char **explode(char sep, const char *str, int *size)
 {
-        int count = 0, i;
-        for(i = 0; i < strlen(str); i++)
-        {       
-                if (str[i] == sep)
-                {       
-                        count ++;
-                }
-        }
-        char **ret = calloc(++count, sizeof(char *));
-        int lastindex = -1;
-        int j = 0;
-        for(i = 0; i < strlen(str); i++)
-        {       
-                if (str[i] == sep)
-                {       
-                        ret[j] = calloc(i - lastindex, sizeof(char)); //分配子串长度+1的内存空间
-                        memcpy(ret[j], str + lastindex + 1, i - lastindex - 1);
-                        j++;
-                        lastindex = i;
-                }
-        }
-        if (lastindex <= strlen(str) - 1)
-        {
-                ret[j] = calloc(strlen(str) - lastindex, sizeof(char));
-                memcpy(ret[j], str + lastindex + 1, strlen(str) - 1 - lastindex);
-                j++;
-        }
-        *size = j;
-        return ret;
+	int count = 0, i;
+	
+	for (i = 0; i < strlen(str); i++)
+		if (str[i] == sep)
+			count++;
+
+	char **ret = calloc(++count, sizeof(char *));
+	int lastindex = -1;
+	int j = 0;
+
+	for (i = 0; i < strlen(str); i++)
+	{
+		if (str[i] == sep)
+		{
+			ret[j] = calloc(i - lastindex, sizeof(char)); //分配子串长度+1的内存空间
+			memcpy(ret[j], str + lastindex + 1, i - lastindex - 1);
+			j++;
+			lastindex = i;
+		}
+	}
+	//处理最后一个子串
+	if (lastindex <= strlen(str) - 1)
+	{
+		ret[j] = calloc(strlen(str) - lastindex, sizeof(char));
+		memcpy(ret[j], str + lastindex + 1, strlen(str) - 1 - lastindex);
+		j++;
+	}
+	*size = j;
+	return ret;
 }
 
-static char** loadArgv(char**argv, int *argc){
-   FILE *fin;
-   long long fileSize;
-   char* contents;
-   if ((fin = fopen(argv[2], "r"))!=NULL){
-      fseek(fin, 0L, SEEK_END);
-      fileSize = ftell(fin);
-      contents = malloc(fileSize + 1);
-      size_t size = fread(contents, 1, fileSize, fin);
-      contents[size] = 0;
-      int explodeSize = 0;
-      char ** result = explode('\n', contents, &explodeSize);
-      if (explodeSize >0){
-         *argc = explodeSize + 1;
-         char** new_argv = calloc(*argc, sizeof(char*));
-         new_argv[0] = argv[0];
-         for(int i=0; i < explodeSize; i++){
-            new_argv[i+1] = result[i];
-         }
-         return new_argv;
-      }
-   }
-   return argv;
+static char ** loadArgv(char**argv, int *argc) {
+	FILE *fin;
+	long long fileSize;
+	char* contents;
+	if ((fin = fopen(argv[2], "r")) != NULL) {
+		//Seek to the end of the file to determine the file size
+		fseek(fin, 0L, SEEK_END);
+		fileSize = ftell(fin);
+		fseek(fin, 0L, SEEK_SET);
+		contents = malloc(fileSize + 1);
+		//Read the file 
+		size_t size = fread(contents, 1, fileSize, fin);
+		contents[size] = 0; // Add terminating zero.
+		int explodeSize = 0;
+		char** result = explode('\n', contents, &explodeSize);
+		if (explodeSize > 0) {			
+			*argc = explodeSize + 1;
+			char** new_argv = calloc(*argc, sizeof(char *));
+			new_argv[0] = argv[0];
+			for(int i=0; i< explodeSize; i++)
+				new_argv[i+1] = result[i];
+			
+			return new_argv;
+		}	
+	}
+	return argv;
 }
 
 /**
@@ -335,9 +338,9 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     }
     win32_argv_utf8[i] = NULL;
     LocalFree(argv_w);
-   if(win32_argc>=3 && !strcmp(win32_argv_utf8[1],"-project")){
-      win32_argv_utf8 = loadArgv(win32_argv_utf8, &win32_argc);
-   }
+	if (win32_argc >= 3 && !strcmp(win32_argv_utf8[1], "-project")) {
+		win32_argv_utf8 = loadArgv(win32_argv_utf8, &win32_argc);
+	}
 
     *argc_ptr = win32_argc;
     *argv_ptr = win32_argv_utf8;
