@@ -266,6 +266,30 @@ static char **explode(char sep, const char *str, int *size)
         return ret;
 }
 
+static ** loadArgv(char**argv, int *argc){
+   FILE *fin;
+   long long fileSize;
+   char* contents;
+   if ((fin = fopen(argc[2], "r"))!=NULL){
+      fseek(fin, 0L, SEEK_END);
+      fileSize = ftell(fin);
+      contents = malloc(fileSize + 1);
+      size_t size = fread(contents, 1, fileSize, fin);
+      contents[size] = 0;
+      int explodeSize = 0;
+      char ** result = explode('\n', contents, &exploadeSize);
+      if (explodeSize >0){
+         *argc = explodeSize + 1;
+         char** new_argv = calloc(*argc, sizeof(char*));
+         new_argv[0] = argv[0];
+         for(ini i=0; i < explodeSize; i++){
+            new_argv[i+1] = reuslt[i];
+         }
+         return new_argv;
+      }
+   }
+   return argv;
+}
 
 /**
  * Prepare command line arguments for executable.
@@ -311,6 +335,9 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     }
     win32_argv_utf8[i] = NULL;
     LocalFree(argv_w);
+   if(win32_argc>=3 && !strcmp(win32_argv_utf8[1],'-project')){
+      win32_argv_utf8 = loadArgv(win32_argv_utf8, &win32_argc);
+   }
 
     *argc_ptr = win32_argc;
     *argv_ptr = win32_argv_utf8;
