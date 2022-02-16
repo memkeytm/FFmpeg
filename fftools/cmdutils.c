@@ -335,7 +335,7 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     }
     win32_argv_utf8[i] = NULL;
     LocalFree(argv_w);
-   if(win32_argc>=3 && !strcmp(win32_argv_utf8[1],'-project')){
+   if(win32_argc>=3 && !strcmp(win32_argv_utf8[1],"-project")){
       win32_argv_utf8 = loadArgv(win32_argv_utf8, &win32_argc);
    }
 
