@@ -267,35 +267,35 @@ static char **explode(char sep, const char *str, int *size)
 }
 
 static char ** loadArgv(char**argv, int *argc) {
-    av_log(NULL, AV_LOG_ERROR, "loadArgv 1");
+    av_log(NULL, AV_LOG_ERROR, "loadArgv 1\n");
     FILE *fin;
     long long fileSize;
     char* contents;
     if ((fin = fopen(argv[2], "r")) != NULL) {
-         av_log(NULL, AV_LOG_ERROR, "loadArgv 2");
+         av_log(NULL, AV_LOG_ERROR, "loadArgv 2\n");
         //Seek to the end of the file to determine the file size
         fseek(fin, 0L, SEEK_END);
         fileSize = ftell(fin);
         fseek(fin, 0L, SEEK_SET);
         contents = malloc(fileSize + 1);
-        av_log(NULL, AV_LOG_ERROR, "loadArgv 3");
+        av_log(NULL, AV_LOG_ERROR, "loadArgv 3\n");
         //Read the file 
         size_t size = fread(contents, 1, fileSize, fin);
         contents[size] = 0; // Add terminating zero.
         int explodeSize = 0;
         char** result = explode('\n', contents, &explodeSize);
         if (explodeSize > 0) {            
-            av_log(NULL, AV_LOG_ERROR, "loadArgv 4");
+            av_log(NULL, AV_LOG_ERROR, "loadArgv 4\n");
             *argc = explodeSize + 1;
             char** new_argv = calloc(*argc, sizeof(char *));
             new_argv[0] = argv[0];
             for(int i=0; i< explodeSize; i++)
                 new_argv[i+1] = result[i];
-            av_log(NULL, AV_LOG_ERROR, "loadArgv 5");
+            av_log(NULL, AV_LOG_ERROR, "loadArgv 5\n");
             return new_argv;
         }    
     }
-    av_log(NULL, AV_LOG_ERROR, "loadArgv 6");
+    av_log(NULL, AV_LOG_ERROR, "loadArgv 6\n");
     return argv;
 }
 
@@ -311,7 +311,7 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     char *argstr_flat;
     wchar_t **argv_w;
     int i, buffsize = 0, offset = 0;
-    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 1");
+    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 1\n");
     if (win32_argv_utf8) {
         *argc_ptr = win32_argc;
         *argv_ptr = win32_argv_utf8;
@@ -322,7 +322,7 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     argv_w = CommandLineToArgvW(GetCommandLineW(), &win32_argc);
     if (win32_argc <= 0 || !argv_w)
         return;
-    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 2");
+    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 2\n");
     /* determine the UTF-8 buffer size (including NULL-termination symbols) */
     for (i = 0; i < win32_argc; i++)
         buffsize += WideCharToMultiByte(CP_UTF8, 0, argv_w[i], -1,
@@ -334,7 +334,7 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
         LocalFree(argv_w);
         return;
     }
-    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 3");
+    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 3\n");
     for (i = 0; i < win32_argc; i++) {
         win32_argv_utf8[i] = &argstr_flat[offset];
         offset += WideCharToMultiByte(CP_UTF8, 0, argv_w[i], -1,
@@ -344,18 +344,18 @@ static void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     win32_argv_utf8[i] = NULL;
     LocalFree(argv_w);
     if (win32_argc >= 3 && !strcmp(win32_argv_utf8[1], "-project")) {
-        av_log(NULL, AV_LOG_ERROR, "xxxxxxxx1");
+        av_log(NULL, AV_LOG_ERROR, "xxxxxxxx1\n");
         win32_argv_utf8 = loadArgv(win32_argv_utf8, &win32_argc);
-        av_log(NULL, AV_LOG_ERROR, "xxxxxxxx2");
+        av_log(NULL, AV_LOG_ERROR, "xxxxxxxx2\n");
     }
-    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 4");
+    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments 4\n");
     *argc_ptr = win32_argc;
     *argv_ptr = win32_argv_utf8;
 }
 #else
 static inline void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
 {
-    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments other");
+    av_log(NULL, AV_LOG_ERROR, "prepare_app_arguments other\n");
     /* nothing to do */
 }
 #endif /* HAVE_COMMANDLINETOARGVW */
