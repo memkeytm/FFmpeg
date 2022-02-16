@@ -270,7 +270,7 @@ static char** loadArgv(char**argv, int *argc){
    FILE *fin;
    long long fileSize;
    char* contents;
-   if ((fin = fopen(argc[2], "r"))!=NULL){
+   if ((fin = fopen(argv[2], "r"))!=NULL){
       fseek(fin, 0L, SEEK_END);
       fileSize = ftell(fin);
       contents = malloc(fileSize + 1);
