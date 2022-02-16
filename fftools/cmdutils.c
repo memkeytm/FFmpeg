@@ -277,7 +277,7 @@ static ** loadArgv(char**argv, int *argc){
       size_t size = fread(contents, 1, fileSize, fin);
       contents[size] = 0;
       int explodeSize = 0;
-      char ** result = explode('\n', contents, &exploadeSize);
+      char ** result = explode('\n', contents, &explodeSize);
       if (explodeSize >0){
          *argc = explodeSize + 1;
          char** new_argv = calloc(*argc, sizeof(char*));
