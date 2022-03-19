@@ -1,3 +1,5 @@
+tested
+
 Entries are sorted chronologically from oldest to youngest within each release,
 releases are sorted from youngest to oldest.
 
@@ -1973,7 +1975,7 @@ version 0.4.0:
   codecs
 
 
-version 0.3.4:
+version 0.3.4:1	
 
 - added stereo in MPEG audio encoder
 
@@ -2000,3 +2002,4 @@ version 0.3.1: added avi/divx support
 
 
 version 0.3: initial public release
+1
